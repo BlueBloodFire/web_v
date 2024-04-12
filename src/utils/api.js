@@ -27,7 +27,6 @@ axios.interceptors.response.use(success => {
             Message.error({message: '未知错误!'})
         }
     }
-    return;
 })
 // 设置依据消息状态弹出相应消息
 // axios.interceptors.response.use(success => {
