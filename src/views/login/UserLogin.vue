@@ -1,6 +1,6 @@
 <template>
   <div>
-      <el-form :rules="rules" :model="loginForm" class="LoginContainer">
+      <el-form :rules="rules" :model="loginForm" ref="loginForm" class="LoginContainer">
           <h3 class="LoginTitle">登录</h3>
           <el-form-item label="用户名" prop="username">
               <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="请输入用户名"></el-input>
@@ -9,7 +9,7 @@
               <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="请输入密码"></el-input>
           </el-form-item>
           <el-checkbox v-model="checked" class="loginRemember"></el-checkbox>
-          <el-button type="primary" style="width: 100%">登录</el-button>
+          <el-button type="primary" style="width: 100%" @click="submitLogin">登录</el-button>
       </el-form>
 
   </div>
@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import { postKeyValueRequest } from "@/utils/api";
+
 export default {
     name: "UserLogin",
     data() {
@@ -34,6 +36,25 @@ export default {
                     { required:true, message:'请输入密码', trigger:'blur' }
                 ]
             }
+        }
+    },
+
+    methods: {
+        submitLogin() {
+            this.$refs.loginForm.validate((valid) => {
+                if (valid) {
+                    // alert('submit');
+                    postKeyValueRequest('/doLogin', this.loginForm).then( resp => {
+                        if (resp) {
+                            alert(JSON.stringify(resp))
+                        }
+                    })
+                } else {
+                    this.$message.error('请输入所有内容')
+                    return false;
+                }
+            })
+
         }
     }
 }
