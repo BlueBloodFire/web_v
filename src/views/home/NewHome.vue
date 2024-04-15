@@ -19,7 +19,27 @@
           </el-header>
           <el-container>
               <el-aside width="200px">
-                  <el-menu router unique-opened></el-menu>
+                  <el-menu
+                      default-active="2"
+                      class="el-menu-vertical-demo"
+                      @open="handleOpen"
+                      @close="handleClose">
+                      <el-submenu index="1">
+                          <template slot="title">
+                              <i class="el-icon-location"></i>
+                              <span>导航一</span>
+                          </template>
+                          <el-submenu index="1-4">
+                              <template slot="title">选项4</template>
+                              <el-menu-item index="1-4-1">选项1</el-menu-item>
+                          </el-submenu>
+                          <el-submenu index="1-5">
+                              <template slot="title">选项5</template>
+                              <el-menu-item index="1-5-1">选项2</el-menu-item>
+                              <el-menu-item index="1-5-2">选项3</el-menu-item>
+                          </el-submenu>
+                      </el-submenu>
+                  </el-menu>
               </el-aside>
               <el-container>
                   <el-main>Main</el-main>

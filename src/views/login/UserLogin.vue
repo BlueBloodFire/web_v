@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import { postKeyValueRequest } from "@/utils/api";
 
 export default {
     name: "UserLogin",
