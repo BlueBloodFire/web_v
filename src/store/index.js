@@ -1,12 +1,30 @@
-// import Vue from 'vue';
-// import Vuex from 'vuex';
+import Vue from 'vue';
+import Vuex from 'vuex';
 // import { Notification } from "element-ui";
 // import { getRequest } from "@/utils/api";
 // import '../utils/sockjs'
 // import '../utils/stomp'
-//
-// Vue.use(Vuex)
-//
+
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+    // 状态
+    state: {
+        routes: []
+
+    },
+    // 事件（均为同步事务）
+    mutations: {
+        initRoutes(state, data) {
+            state.routes = data;
+        }
+    },
+    // 操作
+    actions: {
+
+    },
+})
+
 // const now = new Date()
 //
 // const store = new Vuex.Store({
