@@ -32,6 +32,10 @@
               </el-aside>
               <el-container>
                   <el-main>
+                      <el-breadcrumb separator="/" v-if="this.$router.currentRoute.path != '/home'">
+                          <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+                          <el-breadcrumb-item>{{ this.$router.currentRoute.name }}</el-breadcrumb-item>
+                      </el-breadcrumb>
                       <router-view/>
                   </el-main>
                   <el-footer></el-footer>
