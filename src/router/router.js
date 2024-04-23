@@ -16,7 +16,10 @@ export default new Router({
             path: '/home',
             name: 'NewHome',
             component: NewHome,
-            hidden: true
+            hidden: true,
+            meta: {
+                roles: ['admin','user']
+            }
         },
     ]
 })

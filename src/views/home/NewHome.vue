@@ -36,7 +36,7 @@
                           <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
                           <el-breadcrumb-item>{{ this.$router.currentRoute.name }}</el-breadcrumb-item>
                       </el-breadcrumb>
-                      <router-view/>
+                      <router-view class="homeRouterView"/>
                   </el-main>
                   <el-footer></el-footer>
               </el-container>
@@ -96,6 +96,9 @@ export default {
 </script>
 
 <style scoped>
+.homeRouterView {
+    margin-top: 15px;
+}
 .homeHeader {
     background-color: #409eff;
     display: flex;
