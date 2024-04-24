@@ -8,7 +8,7 @@
                 element-loading-text="正在加载..."
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)"
-                placeholder="添加职位..."
+                placeholder="请添加职位"
                 prefix-icon="el-icon-plus"
                 @keydown.enter.native="addPosition"
                 v-model="pos.name">
@@ -18,7 +18,6 @@
         <div class="posManaMain">
             <el-table
                 :data="positions"
-                border
                 @selection-change="handleSelectionChange"
                 size="small"
                 stripe
