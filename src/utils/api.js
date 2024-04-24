@@ -84,7 +84,7 @@ export const postKeyValueRequest = (url, params) => {
 export const postRequest = (url, params) => {
     return axios({
         method: 'post',
-        url: '${base}${url}',
+        url: `${base}${url}`,
         data: params
     })
 }
@@ -108,7 +108,7 @@ export const getRequest = (url, params) => {
 }
 
 // 设置delete接口
-export  const deleteRequest = (url, params) => {
+export const deleteRequest = (url, params) => {
     return axios({
         method: 'delete',
         url: `${base}${url}`,
