@@ -12,6 +12,10 @@
               accordion
               style="width: 60%; margin-top: 20px"
               @change="change"
+              v-loading="loading"
+              element-loading-text="正在加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)"
               v-model="activeName">
               <el-collapse-item :title="r.nameZh" :name="r.id" v-for="(r,index) in roles" :key="index">
                   <el-card class="box-card">
@@ -56,7 +60,8 @@ export default {
                 children: 'children',
                 label: 'name'
             },
-            activeName: -1
+            activeName: -1,
+            loading: false
         }
     },
     mounted() {
@@ -125,8 +130,10 @@ export default {
             }
         },
         initRoles() {
+            this.loading = true
             this.getRequest("/system/basic/permiss/").then( res => {
                 if (res) {
+                    this.loading = false
                     this.roles = res;
                 }
             })

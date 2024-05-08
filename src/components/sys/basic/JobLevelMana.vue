@@ -29,6 +29,10 @@
           <el-table
               :data="jobLevels"
               size="small"
+              v-loading="loading"
+              element-loading-text="正在加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)"
               stripe
               style="width: 70%">
               <el-table-column
@@ -128,7 +132,8 @@ export default {
             ],
             value: '',
             jobLevels: [],
-            dialogVisible: false
+            dialogVisible: false,
+            loading: false
         }
     },
     mounted() {
@@ -178,8 +183,10 @@ export default {
             }
         },
         initJobLevels() {
+            this.loading = true
             this.getRequest("/system/basic/joblevel/").then( res => {
                 if (res) {
+                    this.loading = false
                     this.jobLevels = res;
                     this.jL = {
                         name: '',

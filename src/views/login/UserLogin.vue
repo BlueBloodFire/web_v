@@ -1,6 +1,14 @@
 <template>
   <div>
-      <el-form :rules="rules" :model="loginForm" ref="loginForm" class="LoginContainer">
+      <el-form
+          :rules="rules"
+          :model="loginForm"
+          v-loading="loading"
+          element-loading-text="正在登录中"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(0, 0, 0, 0.8)"
+          ref="loginForm"
+          class="LoginContainer">
           <h3 class="LoginTitle">登录</h3>
           <el-form-item label="用户名" prop="username">
               <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="请输入用户名"></el-input>
@@ -22,6 +30,7 @@ export default {
     name: "UserLogin",
     data() {
         return {
+            loading: false,
             loginForm: {
               username: 'admin',
               password: '123'
@@ -41,10 +50,12 @@ export default {
     methods: {
         submitLogin() {
             this.$refs.loginForm.validate((valid) => {
+                this.loading = true
                 if (valid) {
                     // alert('submit');
                     this.postKeyValueRequest('/doLogin', this.loginForm).then( resp => {
                         if (resp) {
+                            this.loading = false;
                             // alert(JSON.stringify(resp))
                             window.sessionStorage.setItem("user",JSON.stringify(resp.obj))
                             let path = this.$route.query.path
