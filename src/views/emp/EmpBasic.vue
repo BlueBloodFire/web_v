@@ -191,14 +191,15 @@
                   </template>
               </el-table-column>
               <el-table-column
-                  fixed="right"
                   label="操作"
-                  width="200">
-<!--                  <template slot-scope="scope">-->
-<!--                      <el-button>编辑</el-button>-->
-<!--                      <el-button type="primary">查看高级资料</el-button>-->
-<!--                      <el-button type="danger">删除</el-button>-->
-<!--                  </template>-->
+                  fixed="right"
+                  width="300"
+                  class="scopeShow">
+                  <template slot-scope="scope">
+                      <el-button size="mini" @click="showEditEmpView(scope.row)">编辑</el-button>
+                      <el-button size="mini" type="primary">查看高级资料</el-button>
+                      <el-button size="mini" @click="deleteEmp(scope.row)" type="danger">删除</el-button>
+                  </template>
               </el-table-column>
           </el-table>
           <div class="pageShow">
@@ -322,7 +323,8 @@
                                   @node-click="handleNodeClick">
                               </el-tree>
                               <div slot="reference"
-                                   @click="showDepView">
+                                   @click="showDepView"
+                                   class="DepShow">
                                   {{inputDepName}}
                               </div>
                           </el-popover>
@@ -335,7 +337,7 @@
                   </el-row>
                   <el-row>
                       <el-form-item label="工号:" prop="workID">
-                          <el-input size="small" style="width: 150px" prefix-icon="el-icon-edit" v-model="emp.workID" placeholder="工号"></el-input>
+                          <el-input size="small" style="width: 150px" prefix-icon="el-icon-edit" v-model="emp.workID" placeholder="工号" disabled></el-input>
                       </el-form-item>
                   </el-row>
                   <el-row>
@@ -446,6 +448,8 @@ export default {
     name: "EmpBasic",
     data() {
         return {
+            inputDepName: '',
+            popVisible: false,
             empData: [],
             total: 0,
             page: 1,
@@ -487,17 +491,154 @@ export default {
                 label: 'name'
             },
             allDeps: [],
-            tiptopDegrees: [],
+            tiptopDegrees: ['博士','硕士','本科','大专','高中','初中','小学','其它'],
             joblevels: [],
             positions: [],
             nations: [],
             politicsstatus: [],
+            value: '',
+            rules: {
+                name: [{required: true, message: '请输入姓名', trigger: 'blur'}],
+                gender: [{required: true, message: '请选择性别', trigger: 'blur'}],
+                birthday: [{required: true, message: '请输入出生日期', trigger: 'blur'}],
+                idCard: [{required: true, message: '请输入身份证号码', trigger: 'blur'}, {
+                    pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
+                    message: '身份证号码格式不正确',
+                    trigger: 'blur'
+                }],
+                wedlock: [{required: true, message: '请选择婚姻状况', trigger: 'blur'}],
+                nationId: [{required: true, message: '请选择民族', trigger: 'blur'}],
+                nativePlace: [{required: true, message: '请输入籍贯', trigger: 'blur'}],
+                politicId: [{required: true, message: '请选择政治面貌', trigger: 'blur'}],
+                email: [{required: true, message: '请输入邮箱', trigger: 'blur'}, {
+                    type: 'email',
+                    message: '邮箱格式不正确',
+                    trigger: 'blur'
+                }],
+                phone: [{required: true, message: '请输入电话', trigger: 'blur'}],
+                address: [{required: true, message: '请输入联系地址', trigger: 'blur'}],
+                departmentId: [{required: true, message: '请选择部门', trigger: 'blur'}],
+                jobLevelId: [{required: true, message: '请选择职位', trigger: 'blur'}],
+                posId: [{required: true, message: '请选择职称', trigger: 'blur'}],
+                engageForm: [{required: true, message: '请选择聘用形式', trigger: 'blur'}],
+                tiptopDegree: [{required: true, message: '请选择学历', trigger: 'blur'}],
+                specialty: [{required: true, message: '请输入专业名称', trigger: 'blur'}],
+                school: [{required: true, message: '请输入毕业院校', trigger: 'blur'}],
+                beginDate: [{required: true, message: '请输入入职日期', trigger: 'blur'}],
+                conversionTime: [{required: true, message: '请输入转正日期', trigger: 'blur'}],
+                beginContract: [{required: true, message: '请输入合同起始日期', trigger: 'blur'}],
+                endContract: [{required: true, message: '请输入合同终止日期', trigger: 'blur'}],
+            }
         }
     },
     mounted() {
         this.initEmpData();
+        this.initData();
     },
     methods: {
+        emptyEmp() {
+            this.emp = {
+                name: "",
+                gender: "",
+                birthday: "",
+                idCard: "",
+                wedlock: "",
+                nationId: 1,
+                nativePlace: "",
+                politicId: 13,
+                email: "",
+                phone: "",
+                address: "",
+                departmentId: null,
+                jobLevelId: 9,
+                posId: 29,
+                engageForm: "",
+                tiptopDegree: "",
+                specialty: "",
+                school: "",
+                beginDate: "",
+                workID: "",
+                contractTerm: 2,
+                conversionTime: "",
+                notworkDate: null,
+                beginContract: "",
+                endContract: "",
+                workAge: null
+            }
+            this.inputDepName = '';
+        },
+        showEditEmpView(data) {
+            this.initPositions();
+            this.title = "编辑员工信息";
+            this.emp = data;
+            this.inputDepName = data.department.name;
+            this.dialogVisible = true;
+        },
+        deleteEmp(data) {
+            this.$confirm('此操作将永久删除【' + data.name + '】, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.deleteRequest("/emp/basic/" + data.id).then(res => {
+                    if (res) {
+                        this.initEmpData();
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+        },
+        doAddEmp() {
+            if (this.emp.id) {
+                this.$refs['empForm'].validate((valid) => {
+                    if (valid) {
+                        this.putRequest("/emp/basic/", this.emp).then(res => {
+                            if (res) {
+                                this.dialogVisible = false;
+                                this.initEmpData();
+                            }
+                        })
+                    }
+                });
+            } else {
+                this.$refs['empForm'].validate((valid) => {
+                    if (valid) {
+                        this.postRequest("/emp/basic/", this.emp).then(res => {
+                            if (res) {
+                                this.dialogVisible = false;
+                                this.initEmpData();
+                            }
+                        })
+                    }
+                });
+            }
+        },
+        handleNodeClick(data) {
+            this.inputDepName = data.name;
+            this.emp.departmentId = data.id;
+            this.popVisible = !this.popVisible;
+        },
+        showDepView() {
+            this.popVisible = !this.popVisible
+        },
+        initPositions() {
+            this.getRequest("/emp/basic/positions").then(res => {
+                if (res) {
+                    this.positions = res;
+                }
+            })
+        },
+        getMaxWorkID() {
+            this.getRequest("/emp/basic/maxWorkID").then( res => {
+                if (res) {
+                    this.emp.workID = res.obj;
+                }
+            })
+        },
         initData() {
             if (!window.sessionStorage.getItem("nations")) {
                 this.getRequest('/emp/basic/nations').then(res => {
@@ -542,7 +683,6 @@ export default {
             } else {
                 this.allDeps = JSON.parse(window.sessionStorage.getItem("deps"))
             }
-
         },
         sizeChange(sizePage) {
             this.size = sizePage;
@@ -553,6 +693,10 @@ export default {
             this.initEmpData()
         },
         showAddEmpView() {
+            this.emptyEmp();
+            this.title = "添加员工";
+            this.initPositions();
+            this.getMaxWorkID();
             this.dialogVisible = true;
         },
         initEmpData() {
@@ -570,6 +714,22 @@ export default {
 </script>
 
 <style scoped>
+.scopeShow {
+    display: flex;
+    justify-content: flex-end;
+}
+.DepShow {
+    width: 150px;
+    display: inline-flex;
+    font-size: 13px;
+    border: 1px solid #dedede;
+    height: 26px;
+    border-radius: 5px;
+    cursor: pointer;
+    align-items: center;
+    padding-left: 8px;
+    box-sizing: border-box
+}
 .pageShow {
     display: flex;
     justify-content: flex-end;
