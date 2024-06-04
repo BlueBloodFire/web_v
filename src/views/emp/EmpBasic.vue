@@ -25,16 +25,23 @@
               </el-button>
           </div>
           <div>
+              <el-upload
+                  :show-file-list="false"
+                  :before-upload="beforeUpload"
+                  :on-success="onSuccess"
+                  :on-error="onError"
+                  :disabled="importDataDisabled"
+                  style="display: inline-flex;margin-right: 8px"
+                  action="/employee/basic/import">
+                  <el-button :disabled="importDataDisabled" type="success" :icon="importDataBtnIcon" size="small">
+                      {{importDataBtnText}}
+                  </el-button>
+              </el-upload>
               <el-button
                   type="success"
                   size="small"
-                  icon="el-icon-upload2">
-                  导入数据
-              </el-button>
-              <el-button
-                  type="success"
-                  size="small"
-                  icon="el-icon-download">
+                  icon="el-icon-download"
+                  @click="exportData">
                   导出数据
               </el-button>
               <el-button
@@ -45,6 +52,7 @@
                   添加用户
               </el-button>
           </div>
+
       </div>
       <div>
           <el-table
@@ -448,6 +456,9 @@ export default {
     name: "EmpBasic",
     data() {
         return {
+            importDataBtnText: '导入数据',
+            importDataDisabled: false,
+            importDataBtnIcon: 'el-icon-upload2',
             inputDepName: '',
             popVisible: false,
             empData: [],
@@ -536,6 +547,25 @@ export default {
         this.initData();
     },
     methods: {
+        onError() {
+            this.importDataBtnText = '导入数据 ';
+            this.importDataBtnIcon = 'el-icon-upload2'
+            this.importDataDisabled = false;
+        },
+        onSuccess() {
+            this.importDataBtnText = '导入数据';
+            this.importDataBtnIcon = 'el-icon-upload2'
+            this.importDataDisabled = false;
+            this.initEmpData();
+        },
+        beforeUpload() {
+            this.importDataBtnText = '导入中';
+            this.importDataBtnIcon = 'el-icon-loading'
+            this.importDataDisabled = true;
+        },
+        exportData() {
+            window.open('/emp/basic/export',"_parent")
+        },
         emptyEmp() {
             this.emp = {
                 name: "",
